@@ -79,8 +79,8 @@
   .podium-2 .pod-block { background: var(--gray-pod); height: 110px; }
   .podium-3 .pod-block { background: var(--coral); height: 90px; }
   .pod-score-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.85; }
-  .pod-score-big { font-size: 44px; font-weight: 500; line-height: 1; margin-top: 4px; color: white; }
-  .podium-2 .pod-score-big, .podium-3 .pod-score-big { font-size: 26px; }
+  .pod-score-big { font-size: 56px; font-weight: 500; line-height: 1; margin-top: 4px; color: white; }
+  .podium-2 .pod-score-big, .podium-3 .pod-score-big { font-size: 32px; }
   .lead-pill { margin-top: 8px; background: var(--orange-deep); padding: 4px 12px; border-radius: 999px; font-size: 12px; color: var(--orange-bg); }
   .podium-base { height: 12px; background: #2C2C2A; border-radius: 0 0 8px 8px; margin: 0 4px 8px; }
 
@@ -96,7 +96,6 @@
   .leader-tile.cat-days .leader-label svg { fill: var(--teal); }
   .leader-tile.cat-gm .leader-label svg { fill: var(--orange); }
   .leader-val { font-size: 32px; font-weight: 500; line-height: 1; margin-top: 10px; }
-  .leader-tile.cat-gm .leader-val { font-size: 26px; }
   .leader-tile.cat-jobs .leader-val { color: var(--blue); }
   .leader-tile.cat-days .leader-val { color: var(--teal); }
   .leader-tile.cat-gm .leader-val { color: var(--orange); }
@@ -107,7 +106,7 @@
   .race-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
   .race-title { font-size: 16px; font-weight: 500; color: var(--text); }
   .race-formula { font-size: 12px; color: var(--text-muted); }
-  .race-thead { display: grid; grid-template-columns: 40px 1fr 50px 50px 85px 60px 90px 16px; gap: 10px; padding: 0 0 10px; border-bottom: 0.5px solid var(--border); font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; }
+  .race-thead { display: grid; grid-template-columns: 40px 1fr 60px 60px 75px 90px 16px; gap: 10px; padding: 0 0 10px; border-bottom: 0.5px solid var(--border); font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; }
   .race-thead > div { text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
   .race-thead > div:nth-child(1), .race-thead > div:nth-child(2) { text-align: left; justify-content: flex-start; }
   .col-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
@@ -117,7 +116,7 @@
 
   .race-row-wrap { border-bottom: 0.5px solid var(--border); }
   .race-row-wrap:last-child { border-bottom: none; }
-  .race-row { display: grid; grid-template-columns: 40px 1fr 50px 50px 85px 60px 90px 16px; gap: 10px; padding: 16px 0; align-items: center; cursor: pointer; transition: background 0.15s; }
+  .race-row { display: grid; grid-template-columns: 40px 1fr 60px 60px 75px 90px 16px; gap: 10px; padding: 16px 0; align-items: center; cursor: pointer; transition: background 0.15s; }
   .race-row:hover { background: var(--bg-softer); }
   .race-row.zero { cursor: default; }
   .race-row.zero:hover { background: transparent; }
@@ -256,7 +255,7 @@
     <div class="leader-tile cat-gm">
       <div class="leader-label">
         <svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8v4h2V3h-7v2h4l-7 7-4-4-8 8z"/></svg>
-        Most gross margin $
+        Best gross margin %
       </div>
       <div class="leader-val" id="leader-gm">—</div>
       <div class="leader-sub" id="leader-gm-name">—</div>
@@ -266,15 +265,14 @@
   <div class="race-card">
     <div class="race-header">
       <div class="race-title">The race</div>
-      <div class="race-formula">Score = jobs + crew days + GM $ &nbsp;·&nbsp; click any row for job details</div>
+      <div class="race-formula">Click any row for job details</div>
     </div>
     <div class="race-thead">
       <div>#</div>
       <div>Rep</div>
       <div><span class="col-dot dot-jobs"></span> Jobs</div>
       <div><span class="col-dot dot-days"></span> Days</div>
-      <div><span class="col-dot dot-gm"></span> GM $</div>
-      <div>GM %</div>
+      <div><span class="col-dot dot-gm"></span> GM %</div>
       <div>Score</div>
       <div></div>
     </div>
@@ -342,7 +340,7 @@ function aggregate(rows) {
   return Object.values(map).map(d => ({
     ...d,
     gm_pct: d.revenue > 0 ? (d.gm / d.revenue) * 100 : 0,
-    score: d.jobs + d.crew_days + d.gm
+    score: d.jobs + d.crew_days + (d.gm / 1000)
   }));
 }
 
@@ -380,8 +378,8 @@ function renderPodium(top3) {
       ? `<div class="rank-badge"><svg viewBox="0 0 24 24"><path d="M5 4h14v3a4 4 0 01-4 4h-.18A5.99 5.99 0 0113 14.92V17h3a1 1 0 011 1v2H7v-2a1 1 0 011-1h3v-2.08A5.99 5.99 0 019.18 11H9a4 4 0 01-4-4V4zm2 2v1a2 2 0 002 2V6H7zm10 0v3a2 2 0 002-2V6h-2z"/></svg></div>`
       : `<div class="rank-badge">${rank}</div>`;
     const lead = rank === 1 && top3[1] && top3[1].score > 0
-      ? `<div class="lead-pill">+${fmtMoneyShort(r.score - top3[1].score)} lead</div>` : '';
-    const tagline = `${r.jobs} jobs · ${r.crew_days} days · ${fmtMoneyShort(r.gm)}`;
+      ? `<div class="lead-pill">+${(r.score - top3[1].score).toFixed(1)} pt lead</div>` : '';
+    const tagline = `${r.jobs} jobs · ${r.crew_days} days · ${r.gm_pct.toFixed(1)}%`;
     return `<div class="podium-spot podium-${rank}">
       ${stars}
       <div class="avatar-wrap">
@@ -392,7 +390,7 @@ function renderPodium(top3) {
       <div class="pod-tagline">${tagline}</div>
       <div class="pod-block">
         <div class="pod-score-label">Score</div>
-        <div class="pod-score-big">${fmtMoneyShort(r.score)}</div>
+        <div class="pod-score-big">${r.score.toFixed(1)}</div>
         ${lead}
       </div>
     </div>`;
@@ -463,7 +461,7 @@ function renderRace(sorted) {
     const pct = isZero ? 2 : Math.max(12, (r.score / leaderScore) * 100);
     const fillColor = isZero ? 'rgba(0,0,0,0.06)' : rankColors[i];
     const gap = sorted[0].score - r.score;
-    const label = isZero ? '' : (rank === 1 ? 'leading' : `−${fmtMoneyShort(gap)} back`);
+    const label = isZero ? '' : (rank === 1 ? 'leading' : `−${gap.toFixed(1)} pts back`);
     const rowClass = `race-row ${rank === 1 ? 'r1' : ''} ${isZero ? 'zero' : ''}`;
     const rankHtml = rank === 1
       ? `<svg viewBox="0 0 24 24"><path d="M5 4h14v3a4 4 0 01-4 4h-.18A5.99 5.99 0 0113 14.92V17h3a1 1 0 011 1v2H7v-2a1 1 0 011-1h3v-2.08A5.99 5.99 0 019.18 11H9a4 4 0 01-4-4V4z"/></svg>1`
@@ -481,9 +479,8 @@ function renderRace(sorted) {
         </div>
         <div class="race-stat">${isZero ? '—' : r.jobs}</div>
         <div class="race-stat">${isZero ? '—' : r.crew_days}</div>
-        <div class="race-stat">${isZero ? '—' : fmtMoneyShort(r.gm)}</div>
         <div class="race-stat">${isZero ? '—' : r.gm_pct.toFixed(1) + '%'}</div>
-        <div class="race-score">${isZero ? '0' : fmtMoneyShort(r.score)}</div>
+        <div class="race-score">${isZero ? '0' : r.score.toFixed(1)}</div>
         <div class="race-chevron">${chevron}</div>
       </div>
       <div class="jobs-panel">
@@ -504,10 +501,10 @@ function renderClosestRace(sorted) {
     const gap = active[i].score - active[i+1].score;
     if (gap < minGap) { minGap = gap; gapPair = [active[i], active[i+1], i+1]; }
   }
-  // Hide if the gap is more than 15k - that's not really a "close race"
-  if (!gapPair || minGap > 15000) { document.getElementById('closest-race').style.display = 'none'; return; }
+  // Hide if the gap is more than 15 points - that's not really a "close race"
+  if (!gapPair || minGap > 15) { document.getElementById('closest-race').style.display = 'none'; return; }
   document.getElementById('closest-race').style.display = 'flex';
-  document.getElementById('closest-title').textContent = `${gapPair[0].rep} vs. ${gapPair[1].rep} — ${fmtMoneyShort(minGap)} gap`;
+  document.getElementById('closest-title').textContent = `${gapPair[0].rep} vs. ${gapPair[1].rep} — ${minGap.toFixed(1)} point gap`;
   document.getElementById('closest-sub').textContent =
     gapPair[2] === 1 ? 'The leader could change with one big sale'
     : gapPair[2] === 2 ? '2nd place could flip with a single job'
@@ -533,12 +530,12 @@ function render(rows) {
   if (active.length) {
     const topJobs = [...active].sort((a,b) => b.jobs - a.jobs)[0];
     const topDays = [...active].sort((a,b) => b.crew_days - a.crew_days)[0];
-    const topGm = [...active].sort((a,b) => b.gm - a.gm)[0];
+    const topGm = [...active].sort((a,b) => b.gm_pct - a.gm_pct)[0];
     document.getElementById('leader-jobs').textContent = topJobs.jobs;
     document.getElementById('leader-jobs-name').textContent = topJobs.rep;
     document.getElementById('leader-days').textContent = topDays.crew_days;
     document.getElementById('leader-days-name').textContent = topDays.rep;
-    document.getElementById('leader-gm').textContent = fmtMoneyShort(topGm.gm);
+    document.getElementById('leader-gm').textContent = topGm.gm_pct.toFixed(1) + '%';
     document.getElementById('leader-gm-name').textContent = topGm.rep;
   } else {
     ['leader-jobs','leader-days','leader-gm'].forEach(id => document.getElementById(id).textContent = '—');

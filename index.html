@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jackson Services — Sales Contest</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-page: #f7f6f3;
+    --bg-card: #ffffff;
+    --bg-soft: #f1efe8;
+    --bg-softer: #faf8f4;
+    --border: rgba(0,0,0,0.08);
+    --border-strong: rgba(0,0,0,0.15);
+    --text: #1c1c1a;
+    --text-muted: #6b6964;
+    --text-dim: #9c9a93;
+    --orange: #BA7517;
+    --orange-light: #FAC775;
+    --orange-bg: #FAEEDA;
+    --orange-text: #633806;
+    --orange-deep: #854F0B;
+    --gold: #EF9F27;
+    --navy: #0C447C;
+    --navy-deep: #042C53;
+    --navy-light: #185FA5;
+    --navy-bg: #E6F1FB;
+    --blue: #185FA5;
+    --teal: #0F6E56;
+    --coral: #D85A30;
+    --coral-light: #F5C4B3;
+    --coral-bg: #FAECE7;
+    --coral-text: #4A1B0C;
+    --gray-pod: #5F5E5A;
+    --gray-light: #D3D1C7;
+    --gray-text: #2C2C2A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; min-height: 100%; background: var(--bg-page); color: var(--text); font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+  body { padding: 24px 32px 32px; }
+
+  .container { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+
+  /* HERO BANNER */
+  .hero { background: var(--navy); border-radius: 12px; padding: 24px 28px; color: white; }
+  .hero-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .hero-left { display: flex; align-items: center; gap: 14px; }
+  .hero-icon { width: 48px; height: 48px; background: rgba(250,199,117,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .hero-icon svg { width: 28px; height: 28px; fill: var(--orange-light); }
+  .hero-eyebrow { font-size: 11px; color: #B5D4F4; text-transform: uppercase; letter-spacing: 0.14em; font-weight: 500; }
+  .hero-title { font-size: 26px; font-weight: 500; color: white; line-height: 1.1; margin-top: 2px; }
+  .hero-sub { font-size: 13px; color: #B5D4F4; margin-top: 4px; }
+  .hero-pills { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+  .hero-pill { background: var(--navy-light); color: #B5D4F4; padding: 6px 14px; border-radius: 999px; font-size: 12px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; }
+  .hero-pill svg { width: 13px; height: 13px; fill: currentColor; }
+
+  /* PODIUM */
+  .podium-wrap { display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 14px; align-items: end; padding: 0 4px; }
+  .podium-spot { display: flex; flex-direction: column; align-items: center; }
+  .stars { display: flex; gap: 4px; height: 22px; align-items: center; justify-content: center; margin-bottom: 6px; }
+  .stars svg { fill: var(--gold); }
+  .avatar-wrap { position: relative; margin-bottom: 10px; }
+  .avatar { border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 500; color: white; border: 4px solid var(--bg-page); }
+  .podium-1 .avatar { width: 110px; height: 110px; font-size: 34px; background: var(--orange); border: 5px solid var(--orange-light); }
+  .podium-2 .avatar { width: 80px; height: 80px; font-size: 26px; background: var(--gray-light); color: var(--gray-text); }
+  .podium-3 .avatar { width: 80px; height: 80px; font-size: 26px; background: var(--coral-light); color: var(--coral-text); }
+  .rank-badge { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 14px; color: white; border: 3px solid var(--bg-page); }
+  .podium-1 .rank-badge { width: 40px; height: 40px; background: var(--orange); }
+  .podium-1 .rank-badge svg { width: 22px; height: 22px; fill: white; }
+  .podium-2 .rank-badge { background: var(--gray-pod); }
+  .podium-3 .rank-badge { background: var(--coral); }
+  .pod-name { font-size: 16px; font-weight: 500; color: var(--text); text-align: center; }
+  .podium-1 .pod-name { font-size: 18px; }
+  .pod-tagline { font-size: 13px; color: var(--text-muted); margin-top: 4px; margin-bottom: 12px; text-align: center; }
+  .podium-1 .pod-tagline { color: var(--orange); font-weight: 500; }
+  .pod-block { width: 100%; border-radius: 12px 12px 0 0; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; padding: 16px 12px; }
+  .podium-1 .pod-block { background: var(--orange); height: 170px; }
+  .podium-2 .pod-block { background: var(--gray-pod); height: 110px; }
+  .podium-3 .pod-block { background: var(--coral); height: 90px; }
+  .pod-score-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.85; }
+  .pod-score-big { font-size: 56px; font-weight: 500; line-height: 1; margin-top: 4px; color: white; }
+  .podium-2 .pod-score-big, .podium-3 .pod-score-big { font-size: 32px; }
+  .lead-pill { margin-top: 8px; background: var(--orange-deep); padding: 4px 12px; border-radius: 999px; font-size: 12px; color: var(--orange-bg); }
+  .podium-base { height: 12px; background: #2C2C2A; border-radius: 0 0 8px 8px; margin: 0 4px 8px; }
+
+  /* CATEGORY LEADERS */
+  .leaders { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .leader-tile { background: var(--bg-card); border: 0.5px solid var(--border); border-radius: 12px; padding: 18px 20px; text-align: center; border-top: 4px solid; border-radius: 0 0 12px 12px; }
+  .leader-tile.cat-jobs { border-top-color: var(--blue); }
+  .leader-tile.cat-days { border-top-color: var(--teal); }
+  .leader-tile.cat-gm { border-top-color: var(--orange); }
+  .leader-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .leader-label svg { width: 13px; height: 13px; }
+  .leader-tile.cat-jobs .leader-label svg { fill: var(--blue); }
+  .leader-tile.cat-days .leader-label svg { fill: var(--teal); }
+  .leader-tile.cat-gm .leader-label svg { fill: var(--orange); }
+  .leader-val { font-size: 32px; font-weight: 500; line-height: 1; margin-top: 10px; }
+  .leader-tile.cat-jobs .leader-val { color: var(--blue); }
+  .leader-tile.cat-days .leader-val { color: var(--teal); }
+  .leader-tile.cat-gm .leader-val { color: var(--orange); }
+  .leader-sub { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+
+  /* THE RACE CARD */
+  .race-card { background: var(--bg-card); border: 0.5px solid var(--border); border-radius: 12px; padding: 22px 24px; }
+  .race-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .race-title { font-size: 16px; font-weight: 500; color: var(--text); }
+  .race-formula { font-size: 12px; color: var(--text-muted); }
+  .race-thead { display: grid; grid-template-columns: 40px 1fr 60px 60px 70px 80px; gap: 10px; padding: 0 0 10px; border-bottom: 0.5px solid var(--border); font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; }
+  .race-thead > div { text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
+  .race-thead > div:nth-child(1), .race-thead > div:nth-child(2) { text-align: left; justify-content: flex-start; }
+  .col-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  .dot-jobs { background: var(--blue); }
+  .dot-days { background: var(--teal); }
+  .dot-gm { background: var(--orange); }
+
+  .race-row { display: grid; grid-template-columns: 40px 1fr 60px 60px 70px 80px; gap: 10px; padding: 16px 0; border-bottom: 0.5px solid var(--border); align-items: center; }
+  .race-row:last-child { border-bottom: none; }
+  .race-rank { font-size: 18px; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+  .race-row.r1 .race-rank { color: var(--orange); }
+  .race-row.r1 .race-rank svg { width: 16px; height: 16px; fill: var(--orange); }
+  .race-row .race-rank { color: var(--text-muted); padding-left: 22px; }
+  .race-row.r1 .race-rank { padding-left: 0; }
+  .race-row.zero .race-rank { color: var(--text-dim); }
+  .race-name-block { min-width: 0; }
+  .race-name { font-size: 15px; font-weight: 500; color: var(--text); }
+  .race-row.zero .race-name { color: var(--text-dim); }
+  .race-bar-bg { height: 28px; background: var(--bg-soft); border-radius: 4px; margin-top: 8px; overflow: hidden; position: relative; }
+  .race-bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-size: 13px; font-weight: 500; }
+  .race-stat { text-align: right; font-size: 18px; font-weight: 500; color: var(--text); line-height: 1; }
+  .race-row.zero .race-stat { color: var(--text-dim); }
+  .race-score { text-align: right; font-size: 22px; font-weight: 500; line-height: 1; }
+  .race-row.r1 .race-score { color: var(--orange); }
+  .race-row.zero .race-score { color: var(--text-dim); }
+
+  /* CLOSEST RACE */
+  .closest { background: var(--navy-deep); border-radius: 12px; padding: 20px 24px; display: flex; align-items: center; gap: 16px; }
+  .closest-icon { width: 48px; height: 48px; background: rgba(239,159,39,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .closest-icon svg { width: 26px; height: 26px; fill: var(--gold); }
+  .closest-eyebrow { font-size: 11px; color: #B5D4F4; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 500; }
+  .closest-title { font-size: 18px; color: white; font-weight: 500; margin-top: 2px; }
+  .closest-sub { font-size: 13px; color: #85B7EB; margin-top: 3px; }
+
+  /* HEADER STRIP */
+  .topstrip { display: flex; align-items: center; justify-content: space-between; padding-bottom: 4px; }
+  .brand-line { display: flex; align-items: center; gap: 10px; }
+  .brand-mark { width: 32px; height: 32px; background: var(--orange); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .brand-mark svg { width: 18px; height: 18px; fill: white; }
+  .brand-text { font-size: 14px; font-weight: 500; color: var(--text); }
+  .brand-text span { color: var(--text-muted); font-weight: 400; }
+  .header-right { display: flex; align-items: center; gap: 16px; }
+  .live-dot { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #2ecc71; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+  .refresh-btn { background: var(--bg-card); border: 0.5px solid var(--border); color: var(--text-muted); font-size: 12px; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+  .refresh-btn:hover { border-color: var(--orange); color: var(--orange); }
+  #clock { font-size: 13px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+
+  /* STATUS */
+  #status-overlay { position: fixed; inset: 0; background: var(--bg-page); display: flex; align-items: center; justify-content: center; z-index: 100; flex-direction: column; gap: 16px; }
+  #status-overlay.hidden { display: none; }
+  .status-text { font-size: 16px; color: var(--text-muted); }
+  .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--orange); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  footer { display: flex; align-items: center; justify-content: space-between; padding-top: 4px; }
+  .footer-note { font-size: 11px; color: var(--text-dim); }
+  .footer-brand { font-size: 12px; color: var(--text-dim); }
+</style>
+</head>
+<body>
+
+<div id="status-overlay">
+  <div class="spinner"></div>
+  <div class="status-text" id="status-text">Loading Jackson Services data...</div>
+</div>
+
+<div class="container" id="main-page" style="display:none;">
+
+  <div class="topstrip">
+    <div class="brand-line">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22" fill="none" stroke="white" stroke-width="2"/></svg>
+      </div>
+      <div class="brand-text">Jackson Services <span>· Sales Contest</span></div>
+    </div>
+    <div class="header-right">
+      <div class="live-dot"><div class="dot"></div> Live</div>
+      <button class="refresh-btn" onclick="loadData()">↻ Refresh</button>
+      <div id="clock"></div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div class="hero-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 4h14v3a4 4 0 01-4 4h-.18A5.99 5.99 0 0113 14.92V17h3a1 1 0 011 1v2H7v-2a1 1 0 011-1h3v-2.08A5.99 5.99 0 019.18 11H9a4 4 0 01-4-4V4zm2 2v1a2 2 0 002 2V6H7zm10 0v3a2 2 0 002-2V6h-2z"/></svg>
+        </div>
+        <div>
+          <div class="hero-eyebrow">Jackson Services</div>
+          <div class="hero-title" id="hero-title">Sales contest</div>
+          <div class="hero-sub">Jobs sold &nbsp;·&nbsp; Crew days &nbsp;·&nbsp; Gross margin</div>
+        </div>
+      </div>
+      <div class="hero-pills">
+        <span class="hero-pill"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 11h5v2h-7V6h2v7z"/></svg> <span id="days-left">—</span> days left</span>
+        <span class="hero-pill"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7L21 3v6h-6"/></svg> Updated <span id="updated-label">—</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="podium-wrap" id="podium"></div>
+  <div class="podium-base"></div>
+
+  <div class="leaders">
+    <div class="leader-tile cat-jobs">
+      <div class="leader-label">
+        <svg viewBox="0 0 24 24"><path d="M9 5h6a2 2 0 012 2h2v13a2 2 0 01-2 2H7a2 2 0 01-2-2V7h2a2 2 0 012-2zm0 2v2h6V7H9zm-2 6l3 3 5-5-1.4-1.4L10 11.2 8.4 9.6 7 11z"/></svg>
+        Most jobs sold
+      </div>
+      <div class="leader-val" id="leader-jobs">—</div>
+      <div class="leader-sub" id="leader-jobs-name">—</div>
+    </div>
+    <div class="leader-tile cat-days">
+      <div class="leader-label">
+        <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 010 1.4l-1 1 2.6 2.6 1-1a1 1 0 011.4 0l2 2a1 1 0 010 1.4l-9 9a1 1 0 01-.7.3H6a1 1 0 01-1-1v-5a1 1 0 01.3-.7l9-9a1 1 0 011.4 0z"/></svg>
+        Most crew days
+      </div>
+      <div class="leader-val" id="leader-days">—</div>
+      <div class="leader-sub" id="leader-days-name">—</div>
+    </div>
+    <div class="leader-tile cat-gm">
+      <div class="leader-label">
+        <svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8v4h2V3h-7v2h4l-7 7-4-4-8 8z"/></svg>
+        Best gross margin
+      </div>
+      <div class="leader-val" id="leader-gm">—</div>
+      <div class="leader-sub" id="leader-gm-name">—</div>
+    </div>
+  </div>
+
+  <div class="race-card">
+    <div class="race-header">
+      <div class="race-title">The race</div>
+      <div class="race-formula">Score = jobs + crew days + GM%</div>
+    </div>
+    <div class="race-thead">
+      <div>#</div>
+      <div>Rep</div>
+      <div><span class="col-dot dot-jobs"></span> Jobs</div>
+      <div><span class="col-dot dot-days"></span> Days</div>
+      <div><span class="col-dot dot-gm"></span> GM %</div>
+      <div>Score</div>
+    </div>
+    <div id="race-list"></div>
+  </div>
+
+  <div class="closest" id="closest-race" style="display:none;">
+    <div class="closest-icon">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2s4 5 4 9a4 4 0 01-8 0c0-1 .5-2 1-3-.5 2-2 3-2 5a5 5 0 0010 0c0-5-5-11-5-11z"/></svg>
+    </div>
+    <div style="flex:1;">
+      <div class="closest-eyebrow">Closest race</div>
+      <div class="closest-title" id="closest-title">—</div>
+      <div class="closest-sub" id="closest-sub">—</div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-note" id="last-updated"></div>
+    <div class="footer-brand">Jackson Services · East Alabama &amp; West Georgia</div>
+  </footer>
+
+</div>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycby_7iLeEbyQI6W72R-kCDUiES_JUhX24qWzyeVqEUqDDkjJQUSRSp-15-RECbZjb3fu/exec';
+
+const REPS = ['Charlie Whitley', 'David Wade', 'Glen Strickland', 'Luke Thompson', 'Taylor Mock'];
+
+function tick() {
+  const now = new Date();
+  document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', {hour:'2-digit',minute:'2-digit'}) + ' · ' + now.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'});
+}
+setInterval(tick, 30000); tick();
+
+function initials(name) {
+  return (name||'?').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+}
+
+function num(v) { const n = parseFloat(v); return isNaN(n) ? 0 : n; }
+
+function aggregate(rows) {
+  const map = {};
+  REPS.forEach(r => { map[r] = { rep: r, jobs: 0, revenue: 0, gm: 0, crew_days: 0 }; });
+  rows.forEach(r => {
+    const rep = (r.sold_by || r['Sold By'] || '').trim();
+    if (!rep || !map[rep]) return;
+    map[rep].jobs += 1;
+    map[rep].revenue += num(r.revenue || r['Jobs Total Revenue']);
+    map[rep].gm += num(r.gross_margin || r['Jobs Gross Margin']);
+    map[rep].crew_days += num(r.crew_days || r['Crew Days']);
+  });
+  return Object.values(map).map(d => ({
+    ...d,
+    gm_pct: d.revenue > 0 ? (d.gm / d.revenue) * 100 : 0,
+    score: d.jobs + d.crew_days + (d.revenue > 0 ? (d.gm / d.revenue) * 100 : 0)
+  }));
+}
+
+function monthContext() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const day = now.getDate();
+  const daysLeft = Math.max(0, daysInMonth - day);
+  const monthName = now.toLocaleDateString('en-US', { month: 'long' });
+  return { daysLeft, monthName, year };
+}
+
+function renderPodium(top3) {
+  const order = [top3[1], top3[0], top3[2]];
+  const ranks = [2, 1, 3];
+  document.getElementById('podium').innerHTML = order.map((r, i) => {
+    const rank = ranks[i];
+    if (!r || r.score === 0) {
+      return `<div class="podium-spot podium-${rank}" style="opacity:0.3;">
+        <div class="stars"></div>
+        <div class="avatar-wrap"><div class="avatar">—</div></div>
+        <div class="pod-name">—</div>
+        <div class="pod-tagline">No sales</div>
+        <div class="pod-block"><div class="pod-score-label">Score</div><div class="pod-score-big">0</div></div>
+      </div>`;
+    }
+    const stars = rank === 1 ? `<div class="stars">
+      <svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+      <svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+      <svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+    </div>` : `<div class="stars"></div>`;
+    const badge = rank === 1
+      ? `<div class="rank-badge"><svg viewBox="0 0 24 24"><path d="M5 4h14v3a4 4 0 01-4 4h-.18A5.99 5.99 0 0113 14.92V17h3a1 1 0 011 1v2H7v-2a1 1 0 011-1h3v-2.08A5.99 5.99 0 019.18 11H9a4 4 0 01-4-4V4zm2 2v1a2 2 0 002 2V6H7zm10 0v3a2 2 0 002-2V6h-2z"/></svg></div>`
+      : `<div class="rank-badge">${rank}</div>`;
+    const lead = rank === 1 && top3[1] && top3[1].score > 0
+      ? `<div class="lead-pill">+${(r.score - top3[1].score).toFixed(1)} pt lead</div>` : '';
+    const tagline = `${r.jobs} jobs · ${r.crew_days} days · ${r.gm_pct.toFixed(1)}%`;
+    return `<div class="podium-spot podium-${rank}">
+      ${stars}
+      <div class="avatar-wrap">
+        <div class="avatar">${initials(r.rep)}</div>
+        ${badge}
+      </div>
+      <div class="pod-name">${r.rep}</div>
+      <div class="pod-tagline">${tagline}</div>
+      <div class="pod-block">
+        <div class="pod-score-label">Score</div>
+        <div class="pod-score-big">${r.score.toFixed(1)}</div>
+        ${lead}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderRace(sorted) {
+  const leaderScore = sorted[0].score || 1;
+  const rankColors = ['var(--orange)', 'var(--coral)', 'var(--gray-pod)', 'var(--gray-light)', 'var(--gray-light)'];
+  const barLabels = ['leading'];
+
+  document.getElementById('race-list').innerHTML = sorted.map((r, i) => {
+    const rank = i + 1;
+    const isZero = r.score === 0;
+    const pct = isZero ? 2 : Math.max(12, (r.score / leaderScore) * 100);
+    const fillColor = isZero ? 'rgba(0,0,0,0.06)' : rankColors[i];
+    const label = isZero ? '' : (rank === 1 ? 'leading' : `−${(sorted[0].score - r.score).toFixed(1)} back`);
+    const rowClass = `race-row ${rank === 1 ? 'r1' : ''} ${isZero ? 'zero' : ''}`;
+    const rankHtml = rank === 1
+      ? `<svg viewBox="0 0 24 24"><path d="M5 4h14v3a4 4 0 01-4 4h-.18A5.99 5.99 0 0113 14.92V17h3a1 1 0 011 1v2H7v-2a1 1 0 011-1h3v-2.08A5.99 5.99 0 019.18 11H9a4 4 0 01-4-4V4z"/></svg>1`
+      : `${rank}`;
+    return `<div class="${rowClass}">
+      <div class="race-rank">${rankHtml}</div>
+      <div class="race-name-block">
+        <div class="race-name">${r.rep}</div>
+        <div class="race-bar-bg">
+          <div class="race-bar-fill" style="width:${pct}%;background:${fillColor};color:${isZero?'transparent':'white'};">${label}</div>
+        </div>
+      </div>
+      <div class="race-stat">${isZero ? '—' : r.jobs}</div>
+      <div class="race-stat">${isZero ? '—' : r.crew_days}</div>
+      <div class="race-stat">${isZero ? '—' : r.gm_pct.toFixed(1) + '%'}</div>
+      <div class="race-score">${r.score.toFixed(1)}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderClosestRace(sorted) {
+  const active = sorted.filter(r => r.score > 0);
+  if (active.length < 2) { document.getElementById('closest-race').style.display = 'none'; return; }
+  let minGap = Infinity, gapPair = null;
+  for (let i = 0; i < active.length - 1; i++) {
+    const gap = active[i].score - active[i+1].score;
+    if (gap < minGap) { minGap = gap; gapPair = [active[i], active[i+1], i+1]; }
+  }
+  if (!gapPair || minGap > 20) { document.getElementById('closest-race').style.display = 'none'; return; }
+  document.getElementById('closest-race').style.display = 'flex';
+  document.getElementById('closest-title').textContent = `${gapPair[0].rep} vs. ${gapPair[1].rep} — ${minGap.toFixed(1)} point gap`;
+  document.getElementById('closest-sub').textContent =
+    gapPair[2] === 1 ? 'The leader could change with one big sale'
+    : gapPair[2] === 2 ? '2nd place could flip with a single job'
+    : `${gapPair[2]}${['st','nd','rd'][gapPair[2]-1]||'th'} place could flip with a single job`;
+}
+
+function render(rows) {
+  if (!rows || !Array.isArray(rows)) { document.getElementById('status-text').textContent = 'No data returned.'; return; }
+
+  document.getElementById('status-overlay').classList.add('hidden');
+  document.getElementById('main-page').style.display = 'flex';
+  document.getElementById('main-page').style.flexDirection = 'column';
+
+  const data = aggregate(rows);
+  const sorted = [...data].sort((a, b) => b.score - a.score);
+  const ctx = monthContext();
+
+  document.getElementById('hero-title').textContent = `Sales contest · ${ctx.monthName} ${ctx.year}`;
+  document.getElementById('days-left').textContent = ctx.daysLeft;
+  document.getElementById('updated-label').textContent = new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
+
+  const active = data.filter(r => r.score > 0);
+  if (active.length) {
+    const topJobs = [...active].sort((a,b) => b.jobs - a.jobs)[0];
+    const topDays = [...active].sort((a,b) => b.crew_days - a.crew_days)[0];
+    const topGm = [...active].sort((a,b) => b.gm_pct - a.gm_pct)[0];
+    document.getElementById('leader-jobs').textContent = topJobs.jobs;
+    document.getElementById('leader-jobs-name').textContent = topJobs.rep;
+    document.getElementById('leader-days').textContent = topDays.crew_days;
+    document.getElementById('leader-days-name').textContent = topDays.rep;
+    document.getElementById('leader-gm').textContent = topGm.gm_pct.toFixed(1) + '%';
+    document.getElementById('leader-gm-name').textContent = topGm.rep;
+  } else {
+    ['leader-jobs','leader-days','leader-gm'].forEach(id => document.getElementById(id).textContent = '—');
+    ['leader-jobs-name','leader-days-name','leader-gm-name'].forEach(id => document.getElementById(id).textContent = '—');
+  }
+
+  renderPodium(sorted.slice(0, 3));
+  renderRace(sorted);
+  renderClosestRace(sorted);
+
+  document.getElementById('last-updated').textContent = 'Last refreshed ' + new Date().toLocaleTimeString();
+}
+
+async function loadData() {
+  document.getElementById('status-overlay').classList.remove('hidden');
+  document.getElementById('status-text').textContent = 'Refreshing...';
+  try {
+    const res = await fetch(API);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    if (!Array.isArray(json)) throw new Error('Bad response');
+    render(json);
+  } catch(e) {
+    document.getElementById('status-text').textContent = 'Error: ' + e.message;
+  }
+}
+
+loadData();
+setInterval(loadData, 120000);
+</script>
+</body>
+</html>

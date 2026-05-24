@@ -149,9 +149,10 @@
   .jobs-table thead th { text-align: left; padding: 8px 10px; font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; border-bottom: 0.5px solid var(--border); }
   .jobs-table thead th.num { text-align: right; }
   .jobs-table tbody td { padding: 10px; border-bottom: 0.5px solid var(--border); color: var(--text); }
-  .jobs-table tbody tr:last-child td { border-bottom: none; }
   .jobs-table tbody td.num { text-align: right; font-variant-numeric: tabular-nums; }
   .jobs-table tbody td.muted { color: var(--text-muted); font-size: 12px; }
+  .jobs-table tfoot .totals-row td { padding: 12px 10px; background: var(--bg-soft); border-top: 1px solid var(--border-strong); font-weight: 500; font-size: 13px; color: var(--text); font-variant-numeric: tabular-nums; }
+  .jobs-table tfoot .totals-row td:first-child { text-transform: uppercase; letter-spacing: 0.06em; font-size: 11px; color: var(--text-muted); }
   .gm-good { color: var(--teal); font-weight: 500; }
   .gm-low { color: var(--coral); font-weight: 500; }
 
@@ -435,6 +436,14 @@ function renderJobsTable(jobsList) {
       <td class="num ${gmClass}">${j.gm_pct.toFixed(1)}%</td>
     </tr>`;
   }).join('');
+
+  // Totals row
+  const totalRevenue = sorted.reduce((s,j) => s + j.revenue, 0);
+  const totalGm = sorted.reduce((s,j) => s + j.gross_margin, 0);
+  const totalDays = sorted.reduce((s,j) => s + j.crew_days, 0);
+  const totalGmPct = totalRevenue > 0 ? (totalGm / totalRevenue) * 100 : 0;
+  const totalGmClass = totalGmPct >= 45 ? 'gm-good' : (totalGmPct < 35 ? 'gm-low' : '');
+
   return `<table class="jobs-table">
     <thead>
       <tr>
@@ -448,6 +457,16 @@ function renderJobsTable(jobsList) {
       </tr>
     </thead>
     <tbody>${rows}</tbody>
+    <tfoot>
+      <tr class="totals-row">
+        <td colspan="2">Total · ${sorted.length} job${sorted.length===1?'':'s'}</td>
+        <td></td>
+        <td class="num">${totalDays}</td>
+        <td class="num">${fmtMoney(totalRevenue)}</td>
+        <td class="num">${fmtMoney(totalGm)}</td>
+        <td class="num ${totalGmClass}">${totalGmPct.toFixed(1)}%</td>
+      </tr>
+    </tfoot>
   </table>`;
 }
 

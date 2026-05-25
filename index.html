@@ -175,8 +175,8 @@
   .live-dot { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
   .dot { width: 7px; height: 7px; border-radius: 50%; background: #2ecc71; animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
-  .refresh-btn { background: var(--bg-card); border: 0.5px solid var(--border); color: var(--text-muted); font-size: 12px; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
-  .refresh-btn:hover { border-color: var(--orange); color: var(--orange); }
+  .info-btn { background: var(--bg-card); border: 0.5px solid var(--border); color: var(--text-muted); font-size: 12px; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-family: inherit; transition: all 0.2s; display: inline-flex; align-items: center; gap: 5px; }
+  .info-btn:hover { border-color: var(--orange); color: var(--orange); }
   #clock { font-size: 13px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
 
   /* STATUS */
@@ -201,6 +201,25 @@
   .pw-btn-submit { background: var(--orange); color: white; }
   .pw-btn-submit:hover { background: var(--orange-deep); }
   .pw-btn-submit:disabled { opacity: 0.6; cursor: wait; }
+
+  /* INFO MODAL (How is this scored) */
+  #info-modal { position: fixed; inset: 0; background: rgba(12, 68, 124, 0.55); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 200; padding: 20px; overflow-y: auto; }
+  #info-modal.open { display: flex; }
+  .info-card { background: var(--bg-card); border-radius: 14px; padding: 28px; max-width: 500px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; }
+  .info-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .info-title { font-size: 18px; font-weight: 500; color: var(--text); }
+  .info-close { background: none; border: none; font-size: 22px; color: var(--text-muted); cursor: pointer; line-height: 1; padding: 0 4px; transition: color 0.15s; }
+  .info-close:hover { color: var(--text); }
+  .info-section { margin-top: 22px; }
+  .info-section h4 { font-size: 11px; color: var(--orange); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; margin-bottom: 10px; }
+  .info-section p { font-size: 14px; color: var(--text); line-height: 1.55; margin-bottom: 8px; }
+  .info-section ul { list-style: none; padding: 0; margin: 8px 0; }
+  .info-section ul li { font-size: 14px; color: var(--text); padding: 6px 0 6px 22px; position: relative; line-height: 1.4; }
+  .info-section ul li::before { content: ''; position: absolute; left: 4px; top: 13px; width: 6px; height: 6px; background: var(--orange); border-radius: 50%; }
+  .info-section strong { color: var(--text); font-weight: 600; }
+  .info-formula { background: var(--bg-soft); border-left: 3px solid var(--orange); border-radius: 4px; padding: 10px 14px; font-size: 14px; margin-top: 10px; color: var(--text); font-weight: 500; }
+  .info-times { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .info-time-pill { background: var(--navy-bg); color: var(--navy); padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 500; }
   .status-text { font-size: 16px; color: var(--text-muted); }
   .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--orange); border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -233,6 +252,41 @@
   </div>
 </div>
 
+<div id="info-modal" onclick="if(event.target.id==='info-modal') closeInfoModal()">
+  <div class="info-card">
+    <div class="info-card-header">
+      <div class="info-title">How the contest works</div>
+      <button class="info-close" onclick="closeInfoModal()" aria-label="Close">×</button>
+    </div>
+
+    <div class="info-section">
+      <h4>How the score works</h4>
+      <p>Three things earn points each month:</p>
+      <ul>
+        <li><strong>1 point</strong> for every job sold</li>
+        <li><strong>1 point</strong> for every crew day</li>
+        <li><strong>1 point</strong> for every $1,000 in gross margin</li>
+      </ul>
+      <div class="info-formula">Highest total at month-end wins.</div>
+    </div>
+
+    <div class="info-section">
+      <h4>About the data</h4>
+      <p>This report shows jobs with a <strong>completion date this month</strong> and a <strong>$0 balance</strong> — paid in full. The key to winning isn't just selling; it's getting jobs <strong>completed and paid in full ASAP</strong>.</p>
+    </div>
+
+    <div class="info-section">
+      <h4>Refresh schedule</h4>
+      <p>Data updates three times a day, Eastern time:</p>
+      <div class="info-times">
+        <span class="info-time-pill">7:30 AM</span>
+        <span class="info-time-pill">12:00 PM</span>
+        <span class="info-time-pill">3:00 PM</span>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container" id="main-page" style="display:none;">
 
   <div class="topstrip">
@@ -244,7 +298,7 @@
     </div>
     <div class="header-right">
       <div class="live-dot"><div class="dot"></div> Live</div>
-      <button class="refresh-btn" onclick="loadData()">↻ Refresh</button>
+      <button class="info-btn" onclick="openInfoModal()">ⓘ How is this scored?</button>
       <div id="clock"></div>
     </div>
   </div>
@@ -486,6 +540,14 @@ function closePasswordModal() {
   pendingExpandIdx = null;
 }
 
+function openInfoModal() {
+  document.getElementById('info-modal').classList.add('open');
+}
+
+function closeInfoModal() {
+  document.getElementById('info-modal').classList.remove('open');
+}
+
 async function submitPassword() {
   const pw = document.getElementById('pw-input').value;
   if (!pw) return;
@@ -709,6 +771,14 @@ async function loadData(silent) {
 
 loadData();
 setInterval(() => loadData(true), 120000);
+
+// Escape key closes any open modal
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closePasswordModal();
+    closeInfoModal();
+  }
+});
 </script>
 </body>
 </html>

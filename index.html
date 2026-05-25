@@ -152,7 +152,8 @@
   .jobs-table tbody td.num { text-align: right; font-variant-numeric: tabular-nums; }
   .jobs-table tbody td.muted { color: var(--text-muted); font-size: 12px; }
   .jobs-table tfoot .totals-row td { padding: 12px 10px; background: var(--bg-soft); border-top: 1px solid var(--border-strong); font-weight: 500; font-size: 13px; color: var(--text); font-variant-numeric: tabular-nums; }
-  .jobs-table tfoot .totals-row td:first-child { text-transform: uppercase; letter-spacing: 0.06em; font-size: 11px; color: var(--text-muted); }
+  .jobs-table tfoot .totals-row td.total-label { text-transform: uppercase; letter-spacing: 0.06em; font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+  .jobs-table .points-cell { color: var(--orange); font-weight: 600; }
   .gm-good { color: var(--teal); font-weight: 500; }
   .gm-low { color: var(--coral); font-weight: 500; }
 
@@ -603,6 +604,7 @@ function renderJobsTable(jobsList) {
   const sorted = [...jobsList].sort((a,b) => b.gross_margin - a.gross_margin);
   const rows = sorted.map(j => {
     const gmClass = j.gm_pct >= 45 ? 'gm-good' : (j.gm_pct < 35 ? 'gm-low' : '');
+    const points = 1 + (j.crew_days || 0) + (j.gross_margin / 1000);
     return `<tr>
       <td class="muted">${j.job_number || '—'}</td>
       <td>${j.customer_name || '—'}</td>
@@ -611,15 +613,17 @@ function renderJobsTable(jobsList) {
       <td class="num">${fmtMoney(j.revenue)}</td>
       <td class="num">${fmtMoney(j.gross_margin)}</td>
       <td class="num ${gmClass}">${j.gm_pct.toFixed(1)}%</td>
+      <td class="num points-cell">${points.toFixed(1)}</td>
     </tr>`;
   }).join('');
 
-  // Totals row
+  // Totals
   const totalRevenue = sorted.reduce((s,j) => s + j.revenue, 0);
   const totalGm = sorted.reduce((s,j) => s + j.gross_margin, 0);
   const totalDays = sorted.reduce((s,j) => s + j.crew_days, 0);
   const totalGmPct = totalRevenue > 0 ? (totalGm / totalRevenue) * 100 : 0;
   const totalGmClass = totalGmPct >= 45 ? 'gm-good' : (totalGmPct < 35 ? 'gm-low' : '');
+  const totalPoints = sorted.length + totalDays + (totalGm / 1000);
 
   return `<table class="jobs-table">
     <thead>
@@ -631,17 +635,20 @@ function renderJobsTable(jobsList) {
         <th class="num">Revenue</th>
         <th class="num">GM $</th>
         <th class="num">GM %</th>
+        <th class="num">Points</th>
       </tr>
     </thead>
     <tbody>${rows}</tbody>
     <tfoot>
       <tr class="totals-row">
-        <td colspan="2">Total · ${sorted.length} job${sorted.length===1?'':'s'}</td>
+        <td class="total-label">Total · ${sorted.length} job${sorted.length===1?'':'s'}</td>
+        <td></td>
         <td></td>
         <td class="num">${totalDays}</td>
         <td class="num">${fmtMoney(totalRevenue)}</td>
         <td class="num">${fmtMoney(totalGm)}</td>
         <td class="num ${totalGmClass}">${totalGmPct.toFixed(1)}%</td>
+        <td class="num points-cell">${totalPoints.toFixed(1)}</td>
       </tr>
     </tfoot>
   </table>`;
